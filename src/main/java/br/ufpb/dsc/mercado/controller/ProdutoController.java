@@ -1,5 +1,6 @@
 package br.ufpb.dsc.mercado.controller;
 
+import br.ufpb.dsc.mercado.domain.CategoriaProduto;
 import br.ufpb.dsc.mercado.domain.Produto;
 import br.ufpb.dsc.mercado.dto.ProdutoForm;
 import br.ufpb.dsc.mercado.exception.ProdutoNaoEncontradoException;
@@ -139,8 +140,9 @@ public class ProdutoController {
     @GetMapping("/novo")
     public String novoForm(Model model) {
         // Passa um form vazio para o Thymeleaf vincular com th:object
-        model.addAttribute("form", new ProdutoForm(null, null, null));
+        model.addAttribute("form", new ProdutoForm(null, null, null, CategoriaProduto.FLOR_CORTE, null, 0));
         model.addAttribute("produto", null); // sem produto = modo criação
+        adicionarOpcoesFormulario(model);
         return "produtos/fragments/form :: modal";
     }
 
@@ -160,9 +162,11 @@ public class ProdutoController {
     public String editarForm(@PathVariable Long id, Model model) {
         Produto produto = produtoService.buscarPorId(id);
         // Converte entidade para form (preenche os campos do formulário)
-        ProdutoForm form = new ProdutoForm(produto.getNome(), produto.getDescricao(), produto.getPreco());
+        ProdutoForm form = new ProdutoForm(produto.getNome(), produto.getDescricao(), produto.getPreco(),
+                produto.getCategoria(), produto.getCor(), produto.getQuantidadeEstoque());
         model.addAttribute("form", form);
         model.addAttribute("produto", produto); // com produto = modo edição
+        adicionarOpcoesFormulario(model);
         return "produtos/fragments/form :: modal";
     }
 
@@ -198,6 +202,7 @@ public class ProdutoController {
         // Se houver erros de validação, retorna o formulário com as mensagens de erro
         if (bindingResult.hasErrors()) {
             model.addAttribute("produto", null);
+            adicionarOpcoesFormulario(model);
             return "produtos/fragments/form :: modal";
         }
 
@@ -240,6 +245,7 @@ public class ProdutoController {
             // Recarrega o produto para o formulário saber que está em modo edição
             Produto produto = produtoService.buscarPorId(id);
             model.addAttribute("produto", produto);
+            adicionarOpcoesFormulario(model);
             return "produtos/fragments/form :: modal";
         }
 
@@ -282,5 +288,9 @@ public class ProdutoController {
         } catch (ProdutoNaoEncontradoException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private void adicionarOpcoesFormulario(Model model) {
+        model.addAttribute("categorias", CategoriaProduto.values());
     }
 }

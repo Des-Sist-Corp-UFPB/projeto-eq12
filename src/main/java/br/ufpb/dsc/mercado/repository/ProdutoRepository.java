@@ -34,7 +34,8 @@ import org.springframework.stereotype.Repository;
  * <p>Exemplo de uso:
  * <pre>
  *   Pageable pageable = PageRequest.of(0, 10, Sort.by("nome"));
- *   Page&lt;Produto&gt; pagina = repository.findByNomeContainingIgnoreCase("arroz", pageable);
+ *   Page&lt;Produto&gt; pagina = repository.findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(
+ *       "rosa", "rosa", pageable);
  * </pre>
  *
  * @author DSC - UFPB Campus IV
@@ -45,7 +46,7 @@ import org.springframework.stereotype.Repository;
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     /**
-     * Busca produtos cujo nome contenha o texto informado, sem distinção de maiúsculas/minúsculas.
+     * Busca produtos cujo nome ou cor contenha o texto informado, sem distinção de maiúsculas/minúsculas.
      *
      * <p>O Spring Data JPA traduz este método para a query JPQL:
      * <pre>
@@ -64,5 +65,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
      * @param pageable configuração de paginação e ordenação
      * @return página de produtos que correspondem ao critério de busca
      */
-    Page<Produto> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
+    Page<Produto> findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(String nome, String cor, Pageable pageable);
 }

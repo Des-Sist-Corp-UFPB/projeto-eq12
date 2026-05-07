@@ -79,7 +79,8 @@ public class ProdutoService {
         if (!StringUtils.hasText(busca)) {
             return produtoRepository.findAll(pageable);
         }
-        return produtoRepository.findByNomeContainingIgnoreCase(busca.trim(), pageable);
+        String termo = busca.trim();
+        return produtoRepository.findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(termo, termo, pageable);
     }
 
     /**
@@ -109,9 +110,12 @@ public class ProdutoService {
     @Transactional
     public Produto criar(ProdutoForm form) {
         Produto produto = new Produto(
-                form.nome(),
-                form.descricao(),
-                form.preco()
+                form.nome().trim(),
+                normalizarTexto(form.descricao()),
+                form.preco(),
+                form.categoria(),
+                normalizarTexto(form.cor()),
+                form.quantidadeEstoque()
         );
         // O método save() do JpaRepository faz o INSERT e retorna a entidade com o ID gerado
         return produtoRepository.save(produto);
@@ -135,12 +139,19 @@ public class ProdutoService {
     @Transactional
     public Produto atualizar(Long id, ProdutoForm form) {
         Produto produto = buscarPorId(id);
-        produto.setNome(form.nome());
-        produto.setDescricao(form.descricao());
+        produto.setNome(form.nome().trim());
+        produto.setDescricao(normalizarTexto(form.descricao()));
         produto.setPreco(form.preco());
+        produto.setCategoria(form.categoria());
+        produto.setCor(normalizarTexto(form.cor()));
+        produto.setQuantidadeEstoque(form.quantidadeEstoque());
         // Não precisa chamar save() explicitamente — o JPA (dirty checking) detecta a mudança
         // e executa o UPDATE automaticamente ao final da transação
         return produtoRepository.save(produto);
+    }
+
+    private String normalizarTexto(String texto) {
+        return StringUtils.hasText(texto) ? texto.trim() : null;
     }
 
     /**

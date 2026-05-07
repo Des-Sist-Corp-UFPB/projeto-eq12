@@ -45,8 +45,8 @@
                             <path th:if="${produto == null}"
                                   d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                         </svg>
-                        <!-- Título dinâmico: "Novo Produto" ou "Editar Produto" -->
-                        <span th:text="${produto == null} ? 'Novo Produto' : 'Editar Produto'">
+                        <!-- Título dinâmico: "Novo Item" ou "Editar Item" -->
+                        <span th:text="${produto == null} ? 'Novo Item' : 'Editar Item'">
                             Produto
                         </span>
                     </h5>
@@ -102,7 +102,7 @@
                                    th:field="*{nome}"
                                    class="form-control"
                                    th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'"
-                                   placeholder="Ex.: Arroz Integral 1kg"
+                                   placeholder="Ex.: Rosa vermelha"
                                    maxlength="120"
                                    required/>
                             <!-- Mensagem de erro do Bean Validation -->
@@ -121,7 +121,7 @@
                                       class="form-control"
                                       th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"
                                       rows="3"
-                                      placeholder="Descrição opcional do produto..."
+                                      placeholder="Descrição opcional do item..."
                                       maxlength="2000"></textarea>
                             <div class="invalid-feedback"
                                  th:if="${#fields.hasErrors('descricao')}"
@@ -129,6 +129,66 @@
                                 Erro na descrição
                             </div>
                             <div class="form-text">Opcional. Máximo de 2000 caracteres.</div>
+                        </div>
+
+                        <!-- Campo Categoria -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="categoria" class="form-label fw-semibold">
+                                    Categoria <span class="text-danger">*</span>
+                                </label>
+                                <select th:field="*{categoria}"
+                                        class="form-select"
+                                        th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid'"
+                                        required>
+                                    <option th:each="categoria : ${categorias}"
+                                            th:value="${categoria}"
+                                            th:text="${categoria.descricao}">
+                                        Flor de corte
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback"
+                                     th:if="${#fields.hasErrors('categoria')}"
+                                     th:errors="*{categoria}">
+                                    Erro na categoria
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="cor" class="form-label fw-semibold">Cor predominante</label>
+                                <input type="text"
+                                       th:field="*{cor}"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('cor')} ? 'is-invalid'"
+                                       placeholder="Ex.: Vermelha"
+                                       maxlength="60"/>
+                                <div class="invalid-feedback"
+                                     th:if="${#fields.hasErrors('cor')}"
+                                     th:errors="*{cor}">
+                                    Erro na cor
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo Estoque -->
+                        <div class="mb-3">
+                            <label for="quantidadeEstoque" class="form-label fw-semibold">
+                                Quantidade em estoque <span class="text-danger">*</span>
+                            </label>
+                            <input type="number"
+                                   th:field="*{quantidadeEstoque}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('quantidadeEstoque')} ? 'is-invalid'"
+                                   min="0"
+                                   max="9999"
+                                   step="1"
+                                   required/>
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('quantidadeEstoque')}"
+                                 th:errors="*{quantidadeEstoque}">
+                                Erro na quantidade
+                            </div>
+                            <div class="form-text">Itens com estoque zero aparecem como indisponíveis.</div>
                         </div>
 
                         <!-- Campo Preço -->
@@ -195,7 +255,7 @@
                                 <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
                             </svg>
                             <!-- Texto do botão dinâmico -->
-                            <span th:text="${produto == null} ? 'Salvar Produto' : 'Atualizar Produto'">
+                            <span th:text="${produto == null} ? 'Salvar Item' : 'Atualizar Item'">
                                 Salvar
                             </span>
                             <!-- Spinner durante envio -->

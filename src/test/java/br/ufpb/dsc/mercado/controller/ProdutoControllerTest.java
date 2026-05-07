@@ -1,5 +1,6 @@
 package br.ufpb.dsc.mercado.controller;
 
+import br.ufpb.dsc.mercado.domain.CategoriaProduto;
 import br.ufpb.dsc.mercado.domain.Produto;
 import br.ufpb.dsc.mercado.repository.ProdutoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +96,8 @@ class ProdutoControllerTest {
 
         // Cria um produto de teste para os cenários que precisam de dado existente
         produtoCadastrado = produtoRepository.save(
-                new Produto("Arroz Integral", "Arroz integral tipo 1", new BigDecimal("8.99"))
+                new Produto("Rosa Vermelha", "Flor de corte para buques",
+                        new BigDecimal("12.90"), CategoriaProduto.FLOR_CORTE, "Vermelha", 24)
         );
     }
 
@@ -115,7 +117,7 @@ class ProdutoControllerTest {
                 // Verifica que o model contém o atributo "produtos"
                 .andExpect(model().attributeExists("produtos"))
                 // Verifica que o HTML contém o nome do produto cadastrado
-                .andExpect(content().string(containsString("Arroz Integral")));
+                .andExpect(content().string(containsString("Rosa Vermelha")));
     }
 
     @Test
@@ -155,14 +157,17 @@ class ProdutoControllerTest {
                         // csrf() adiciona o token CSRF para não falhar na proteção CSRF
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("nome", "Feijão Preto")
-                        .param("descricao", "Feijão preto premium")
-                        .param("preco", "7.50"))
+                        .param("nome", "Orquidea Phalaenopsis")
+                        .param("descricao", "Orquidea em vaso")
+                        .param("preco", "89.90")
+                        .param("categoria", "PLANTA")
+                        .param("cor", "Branca")
+                        .param("quantidadeEstoque", "8"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("produtos/fragments/linha :: linha"))
                 .andExpect(model().attributeExists("produto"))
                 // O HTML retornado deve conter o nome do produto criado
-                .andExpect(content().string(containsString("Feijão Preto")));
+                .andExpect(content().string(containsString("Orquidea Phalaenopsis")));
     }
 
     @Test
@@ -173,7 +178,9 @@ class ProdutoControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("nome", "") // Nome vazio — inválido!
-                        .param("preco", "-1.00")) // Preço negativo — inválido!
+                        .param("preco", "-1.00") // Preço negativo — inválido!
+                        .param("categoria", "FLOR_CORTE")
+                        .param("quantidadeEstoque", "-1"))
                 .andExpect(status().isOk())
                 // Retorna o formulário com erros em vez de criar o produto
                 .andExpect(view().name("produtos/fragments/form :: modal"))
@@ -193,7 +200,7 @@ class ProdutoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("produtos/fragments/form :: modal"))
                 .andExpect(model().attributeExists("form", "produto"))
-                .andExpect(content().string(containsString("Arroz Integral")));
+                .andExpect(content().string(containsString("Rosa Vermelha")));
     }
 
     // =========================================================================

@@ -21,7 +21,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{layout :: layout(~{::main})}">
 <head>
-    <title>Produtos</title>
+    <title>Catálogo da Floricultura</title>
 </head>
 <body>
 
@@ -29,8 +29,8 @@
     <!-- Cabeçalho da página -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-1">Produtos</h1>
-            <p class="text-muted mb-0">Gerencie o catálogo de produtos</p>
+            <h1 class="h3 mb-1">Catálogo da Floricultura</h1>
+            <p class="text-muted mb-0">Gerencie flores, arranjos, plantas e presentes</p>
         </div>
         <!--
           Botão que aciona o HTMX para carregar o formulário de novo produto.
@@ -49,7 +49,7 @@
                  class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
             </svg>
-            Novo Produto
+            Novo Item
             <!-- Spinner visível durante requisições HTMX (htmx-indicator) -->
             <span id="spinner" class="spinner-border spinner-border-sm htmx-indicator ms-1"
                   role="status" aria-hidden="true"></span>
@@ -83,7 +83,7 @@
                         <input type="search"
                                name="busca"
                                class="form-control"
-                               placeholder="Buscar por nome..."
+                               placeholder="Buscar por nome ou cor..."
                                th:value="${busca}"
                                hx-get="/produtos/fragmento-tabela"
                                hx-trigger="keyup changed delay:400ms, search"
@@ -94,7 +94,7 @@
                 <div class="col-md-6 text-end">
                     <!-- Total de resultados exibido após busca -->
                     <span class="text-muted small" th:if="${produtos != null}">
-                        <span th:text="${produtos.totalElements}">0</span> produto(s) encontrado(s)
+                        <span th:text="${produtos.totalElements}">0</span> item(ns) encontrado(s)
                     </span>
                 </div>
             </div>

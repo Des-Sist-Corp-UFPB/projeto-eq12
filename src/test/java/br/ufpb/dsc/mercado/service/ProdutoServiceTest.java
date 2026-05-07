@@ -1,5 +1,6 @@
 package br.ufpb.dsc.mercado.service;
 
+import br.ufpb.dsc.mercado.domain.CategoriaProduto;
 import br.ufpb.dsc.mercado.domain.Produto;
 import br.ufpb.dsc.mercado.dto.ProdutoForm;
 import br.ufpb.dsc.mercado.exception.ProdutoNaoEncontradoException;
@@ -71,10 +72,12 @@ class ProdutoServiceTest {
      */
     @BeforeEach
     void setUp() {
-        produtoExistente = new Produto("Arroz Integral", "Arroz integral tipo 1", new BigDecimal("8.99"));
+        produtoExistente = new Produto("Rosa Vermelha", "Flor de corte para buques",
+                new BigDecimal("12.90"), CategoriaProduto.FLOR_CORTE, "Vermelha", 24);
         produtoExistente.setId(1L);
 
-        formValido = new ProdutoForm("Feijão Preto", "Feijão preto premium", new BigDecimal("7.50"));
+        formValido = new ProdutoForm("Orquidea Phalaenopsis", "Orquidea em vaso",
+                new BigDecimal("89.90"), CategoriaProduto.PLANTA, "Branca", 8);
     }
 
     // =========================================================================
@@ -94,7 +97,7 @@ class ProdutoServiceTest {
         // THEN (Assert) — verifica o resultado
         assertThat(resultado).isNotNull();
         assertThat(resultado.getId()).isEqualTo(1L);
-        assertThat(resultado.getNome()).isEqualTo("Arroz Integral");
+        assertThat(resultado.getNome()).isEqualTo("Rosa Vermelha");
 
         // Verifica que o repositório foi chamado exatamente uma vez com o ID correto
         verify(produtoRepository, times(1)).findById(1L);
@@ -123,7 +126,8 @@ class ProdutoServiceTest {
     void criar_comFormValido_deveSalvarERetornarProduto() {
         // GIVEN
         // Simula o save() retornando um produto com ID gerado pelo banco
-        Produto produtoSalvo = new Produto(formValido.nome(), formValido.descricao(), formValido.preco());
+        Produto produtoSalvo = new Produto(formValido.nome(), formValido.descricao(), formValido.preco(),
+                formValido.categoria(), formValido.cor(), formValido.quantidadeEstoque());
         produtoSalvo.setId(2L);
         when(produtoRepository.save(any(Produto.class))).thenReturn(produtoSalvo);
 
@@ -133,8 +137,11 @@ class ProdutoServiceTest {
         // THEN
         assertThat(resultado).isNotNull();
         assertThat(resultado.getId()).isEqualTo(2L);
-        assertThat(resultado.getNome()).isEqualTo("Feijão Preto");
-        assertThat(resultado.getPreco()).isEqualByComparingTo("7.50");
+        assertThat(resultado.getNome()).isEqualTo("Orquidea Phalaenopsis");
+        assertThat(resultado.getPreco()).isEqualByComparingTo("89.90");
+        assertThat(resultado.getCategoria()).isEqualTo(CategoriaProduto.PLANTA);
+        assertThat(resultado.getCor()).isEqualTo("Branca");
+        assertThat(resultado.getQuantidadeEstoque()).isEqualTo(8);
 
         // Verifica que save() foi chamado com qualquer Produto (não importa qual instância)
         verify(produtoRepository, times(1)).save(any(Produto.class));
@@ -151,14 +158,17 @@ class ProdutoServiceTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoExistente));
         when(produtoRepository.save(any(Produto.class))).thenReturn(produtoExistente);
 
-        ProdutoForm formAtualizado = new ProdutoForm("Arroz Branco", "Arroz branco tipo 1", new BigDecimal("5.99"));
+        ProdutoForm formAtualizado = new ProdutoForm("Buque Primavera", "Arranjo com flores do campo",
+                new BigDecimal("59.90"), CategoriaProduto.ARRANJO, "Colorido", 5);
 
         // WHEN
         Produto resultado = produtoService.atualizar(1L, formAtualizado);
 
         // THEN
-        assertThat(resultado.getNome()).isEqualTo("Arroz Branco");
-        assertThat(resultado.getPreco()).isEqualByComparingTo("5.99");
+        assertThat(resultado.getNome()).isEqualTo("Buque Primavera");
+        assertThat(resultado.getPreco()).isEqualByComparingTo("59.90");
+        assertThat(resultado.getCategoria()).isEqualTo(CategoriaProduto.ARRANJO);
+        assertThat(resultado.getQuantidadeEstoque()).isEqualTo(5);
 
         verify(produtoRepository).findById(1L);
         verify(produtoRepository).save(any(Produto.class));

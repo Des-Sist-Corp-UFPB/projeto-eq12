@@ -57,8 +57,6 @@ services:
     volumes:
       # Monta o código-fonte para hot-reload
       - ../src:/app/src
-      # Persistir dependências Maven (evita re-download a cada restart)
-      - maven-cache:/root/.m2
     depends_on:
       postgres:
         condition: service_healthy
@@ -98,7 +96,6 @@ services:
 
 volumes:
   postgres-dev-data:
-  maven-cache:
   trivy-cache:
 
 networks:

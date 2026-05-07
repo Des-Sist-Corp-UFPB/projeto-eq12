@@ -22,9 +22,11 @@
             <thead class="table-light">
                 <tr>
                     <th scope="col" style="width: 5%">#</th>
-                    <th scope="col" style="width: 25%">Nome</th>
-                    <th scope="col" style="width: 40%">Descrição</th>
-                    <th scope="col" style="width: 15%" class="text-end">Preço</th>
+                    <th scope="col" style="width: 24%">Nome</th>
+                    <th scope="col" style="width: 16%">Categoria</th>
+                    <th scope="col" style="width: 14%">Cor</th>
+                    <th scope="col" style="width: 14%" class="text-center">Estoque</th>
+                    <th scope="col" style="width: 12%" class="text-end">Preço</th>
                     <th scope="col" style="width: 15%" class="text-center">Ações</th>
                 </tr>
             </thead>
@@ -47,13 +49,13 @@
 
                 <!-- Mensagem quando não há produtos -->
                 <tr th:if="${produtos == null or produtos.content.empty}">
-                    <td colspan="5" class="text-center text-muted py-5">
+                    <td colspan="7" class="text-center text-muted py-5">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
                              fill="currentColor" class="bi bi-inbox d-block mx-auto mb-2 text-secondary"
                              viewBox="0 0 16 16">
                             <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4zm-1.17-.437A1.5 1.5 0 0 1 4.98 3h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 13H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .106-.374z"/>
                         </svg>
-                        Nenhum produto encontrado.
+                        Nenhum item encontrado.
                     </td>
                 </tr>
 
@@ -97,7 +99,7 @@
         <p class="text-center text-muted small mt-1">
             Página <span th:text="${paginaAtual + 1}">1</span>
             de <span th:text="${produtos.totalPages}">1</span>
-            — <span th:text="${produtos.totalElements}">0</span> produto(s) no total
+            — <span th:text="${produtos.totalElements}">0</span> item(ns) no total
         </p>
     </nav>
 
