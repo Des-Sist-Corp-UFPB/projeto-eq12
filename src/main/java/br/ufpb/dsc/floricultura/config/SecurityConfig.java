@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.config;
+package br.ufpb.dsc.floricultura.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

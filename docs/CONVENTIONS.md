@@ -28,7 +28,7 @@ chore: atualizar dependências do pom.xml
 
 | Elemento | Convenção | Exemplo |
 |---|---|---|
-| Package | lowercase | `br.ufpb.dsc.mercado.service` |
+| Package | lowercase | `br.ufpb.dsc.floricultura.service` |
 | Classe | PascalCase | `ProdutoFloralService` |
 | Método | camelCase | `buscarPorId()` |
 | Constante | UPPER_SNAKE | `MAX_NOME_LENGTH` |

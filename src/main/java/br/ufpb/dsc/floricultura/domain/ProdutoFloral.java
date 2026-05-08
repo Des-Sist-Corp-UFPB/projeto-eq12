@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.domain;
+package br.ufpb.dsc.floricultura.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

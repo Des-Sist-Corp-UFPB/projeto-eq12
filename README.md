@@ -1,4 +1,4 @@
-# Floricultura DSC — Projeto Spring Boot
+# Floricultura da Dona Ana — Projeto Spring Boot
 
 Aplicação de floricultura para a disciplina **Desenvolvimento de Sistemas Corporativos**.
 O projeto mantém a arquitetura do boilerplate original e evolui o CRUD de produtos florais para
@@ -123,7 +123,7 @@ docker compose -f docker/docker-compose.dev.yml up --build
 
 Aguarde as mensagens de inicialização. Quando aparecer algo como:
 ```
-Started MercadoApplication in X.XXX seconds
+Started FloriculturaApplication in X.XXX seconds
 ```
 ...a aplicação está pronta.
 
@@ -323,7 +323,7 @@ Se alguma etapa falhar, clique nela para ver os logs detalhados.
 projeto-eq12/
 ├── .github/workflows/
 │   └── deploy.yml           # Pipeline CI/CD (GitHub Actions)
-├── src/main/java/br/ufpb/dsc/mercado/
+├── src/main/java/br/ufpb/dsc/floricultura/
 │   ├── config/              # Configurações (Security, GlobalModelAttributes, etc.)
 │   ├── controller/          # Controllers HTTP + HTMX
 │   ├── domain/              # Entidades JPA

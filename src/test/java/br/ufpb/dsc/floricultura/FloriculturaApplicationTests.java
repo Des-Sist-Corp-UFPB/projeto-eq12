@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado;
+package br.ufpb.dsc.floricultura;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @ActiveProfiles("test")
 @Testcontainers
-class MercadoApplicationTests {
+class FloriculturaApplicationTests {
 
     @Container
     @ServiceConnection

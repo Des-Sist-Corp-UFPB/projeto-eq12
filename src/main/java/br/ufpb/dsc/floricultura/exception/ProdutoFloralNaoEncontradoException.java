@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.exception;
+package br.ufpb.dsc.floricultura.exception;
 
 /**
  * Excecao lancada quando um produto floral nao e encontrado no banco de dados.

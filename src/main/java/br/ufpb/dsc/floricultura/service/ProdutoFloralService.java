@@ -1,9 +1,9 @@
-package br.ufpb.dsc.mercado.service;
+package br.ufpb.dsc.floricultura.service;
 
-import br.ufpb.dsc.mercado.domain.ProdutoFloral;
-import br.ufpb.dsc.mercado.dto.ProdutoFloralForm;
-import br.ufpb.dsc.mercado.exception.ProdutoFloralNaoEncontradoException;
-import br.ufpb.dsc.mercado.repository.ProdutoFloralRepository;
+import br.ufpb.dsc.floricultura.domain.ProdutoFloral;
+import br.ufpb.dsc.floricultura.dto.ProdutoFloralForm;
+import br.ufpb.dsc.floricultura.exception.ProdutoFloralNaoEncontradoException;
+import br.ufpb.dsc.floricultura.repository.ProdutoFloralRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

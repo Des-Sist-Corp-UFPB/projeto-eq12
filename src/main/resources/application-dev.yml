@@ -21,5 +21,5 @@ spring:
 
 logging:
   level:
-    br.ufpb.dsc.mercado: DEBUG
+    br.ufpb.dsc.floricultura: DEBUG
     org.springframework.web: DEBUG

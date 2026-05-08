@@ -1,6 +1,6 @@
-package br.ufpb.dsc.mercado.repository;
+package br.ufpb.dsc.floricultura.repository;
 
-import br.ufpb.dsc.mercado.domain.ProdutoFloral;
+import br.ufpb.dsc.floricultura.domain.ProdutoFloral;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

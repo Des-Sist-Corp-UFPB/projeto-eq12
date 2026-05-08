@@ -1,10 +1,10 @@
-package br.ufpb.dsc.mercado.controller;
+package br.ufpb.dsc.floricultura.controller;
 
-import br.ufpb.dsc.mercado.domain.CategoriaProdutoFloral;
-import br.ufpb.dsc.mercado.domain.ProdutoFloral;
-import br.ufpb.dsc.mercado.dto.ProdutoFloralForm;
-import br.ufpb.dsc.mercado.exception.ProdutoFloralNaoEncontradoException;
-import br.ufpb.dsc.mercado.service.ProdutoFloralService;
+import br.ufpb.dsc.floricultura.domain.CategoriaProdutoFloral;
+import br.ufpb.dsc.floricultura.domain.ProdutoFloral;
+import br.ufpb.dsc.floricultura.dto.ProdutoFloralForm;
+import br.ufpb.dsc.floricultura.exception.ProdutoFloralNaoEncontradoException;
+import br.ufpb.dsc.floricultura.service.ProdutoFloralService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

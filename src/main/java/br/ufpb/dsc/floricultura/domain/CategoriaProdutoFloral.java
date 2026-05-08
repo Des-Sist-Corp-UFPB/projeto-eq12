@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.domain;
+package br.ufpb.dsc.floricultura.domain;
 
 /**
  * Categorias simples para organizar o catalogo de uma floricultura.

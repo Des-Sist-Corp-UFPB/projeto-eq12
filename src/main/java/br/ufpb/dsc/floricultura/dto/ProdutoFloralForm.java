@@ -1,6 +1,6 @@
-package br.ufpb.dsc.mercado.dto;
+package br.ufpb.dsc.floricultura.dto;
 
-import br.ufpb.dsc.mercado.domain.CategoriaProdutoFloral;
+import br.ufpb.dsc.floricultura.domain.CategoriaProdutoFloral;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;

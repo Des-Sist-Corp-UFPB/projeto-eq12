@@ -1,8 +1,8 @@
-package br.ufpb.dsc.mercado.controller;
+package br.ufpb.dsc.floricultura.controller;
 
-import br.ufpb.dsc.mercado.domain.CategoriaProdutoFloral;
-import br.ufpb.dsc.mercado.domain.ProdutoFloral;
-import br.ufpb.dsc.mercado.repository.ProdutoFloralRepository;
+import br.ufpb.dsc.floricultura.domain.CategoriaProdutoFloral;
+import br.ufpb.dsc.floricultura.domain.ProdutoFloral;
+import br.ufpb.dsc.floricultura.repository.ProdutoFloralRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

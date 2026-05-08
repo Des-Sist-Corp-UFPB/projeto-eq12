@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.config;
+package br.ufpb.dsc.floricultura.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;

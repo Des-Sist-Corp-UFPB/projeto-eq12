@@ -1,10 +1,10 @@
-package br.ufpb.dsc.mercado;
+package br.ufpb.dsc.floricultura;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Classe principal da aplicação Mercado.
+ * Classe principal da aplicação Floricultura.
  *
  * <p>A anotação {@code @SpringBootApplication} é um atalho que combina três anotações:
  * <ul>
@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version 0.0.1-SNAPSHOT
  */
 @SpringBootApplication
-public class MercadoApplication {
+public class FloriculturaApplication {
 
     /**
      * Ponto de entrada da JVM.
@@ -35,6 +35,6 @@ public class MercadoApplication {
      * @param args argumentos de linha de comando (podem sobrescrever propriedades do application.yml)
      */
     public static void main(String[] args) {
-        SpringApplication.run(MercadoApplication.class, args);
+        SpringApplication.run(FloriculturaApplication.class, args);
     }
 }
