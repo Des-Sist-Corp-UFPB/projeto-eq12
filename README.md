@@ -1,6 +1,8 @@
-# Sistema Mercado — Projeto Base DSC/UFPB
+# Floricultura da Dona Ana — Projeto Spring Boot
 
-Projeto base (boilerplate) para a disciplina **Desenvolvimento de Sistemas Corporativos**.
+Aplicação de floricultura para a disciplina **Desenvolvimento de Sistemas Corporativos**.
+O projeto mantém a arquitetura do boilerplate original e evolui o CRUD de produtos florais para
+gerenciar flores, arranjos, plantas, presentes e acessórios.
 
 **Professor**: Rodrigo Rebouças | **UFPB — Campus IV**
 
@@ -92,10 +94,11 @@ docker -v
 
 ```bash
 git clone <URL-DO-REPOSITÓRIO>
-cd base_projeto
+cd projeto-eq12
 ```
 
 > Substitua `<URL-DO-REPOSITÓRIO>` pela URL fornecida pelo professor.
+> Execute os comandos Docker sempre a partir da raiz do projeto. Neste ambiente, a raiz é `D:\projeto-eq12`.
 
 ---
 
@@ -111,9 +114,16 @@ Um único comando sobe o banco, a aplicação e o Adminer (interface web do banc
 docker compose -f docker/docker-compose.dev.yml up --build
 ```
 
+No PowerShell, se você estiver em outra pasta, entre primeiro na raiz atual do projeto:
+
+```powershell
+cd D:\projeto-eq12
+docker compose -f docker/docker-compose.dev.yml up --build
+```
+
 Aguarde as mensagens de inicialização. Quando aparecer algo como:
 ```
-Started MercadoApplication in X.XXX seconds
+Started FloriculturaApplication in X.XXX seconds
 ```
 ...a aplicação está pronta.
 
@@ -310,10 +320,10 @@ Se alguma etapa falhar, clique nela para ver os logs detalhados.
 ## Estrutura do Projeto
 
 ```
-base_projeto/
+projeto-eq12/
 ├── .github/workflows/
 │   └── deploy.yml           # Pipeline CI/CD (GitHub Actions)
-├── src/main/java/br/ufpb/dsc/mercado/
+├── src/main/java/br/ufpb/dsc/floricultura/
 │   ├── config/              # Configurações (Security, GlobalModelAttributes, etc.)
 │   ├── controller/          # Controllers HTTP + HTMX
 │   ├── domain/              # Entidades JPA
@@ -332,12 +342,31 @@ base_projeto/
 
 ---
 
-## Para Alunos: Adaptando o Boilerplate
+## Domínio Implementado
 
-1. **Renomear** a entidade `Produto` para sua entidade principal
-2. **Criar migration** Flyway com a nova estrutura da tabela (`src/main/resources/db/migration/V2__...sql`)
-3. **Atualizar** Repository, Service, Controller e templates seguindo os mesmos padrões
-4. **Manter** a estrutura de pacotes e convenções (ver `docs/CONVENTIONS.md`)
-5. **Nunca editar** migrations já aplicadas — sempre criar uma nova (`V3__`, `V4__`, ...)
+O CRUD principal fica em `/produtos-florais` e representa itens de uma floricultura:
+
+- nome, descrição e preço
+- categoria: flor de corte, arranjo, planta, presente ou acessório
+- cor predominante
+- quantidade em estoque
+
+Itens com estoque zero aparecem como indisponíveis na listagem. A autenticação existente foi mantida:
+usuário `admin`, senha `admin123`.
+
+## Arquivos Docker
+
+O comando principal de desenvolvimento usa o arquivo versionado `docker/docker-compose.dev.yml`:
+
+```bash
+docker compose -f docker/docker-compose.dev.yml up --build
+```
+
+Arquivos Docker presentes:
+
+- `docker/Dockerfile.dev`
+- `docker/Dockerfile`
+- `docker/docker-compose.dev.yml`
+- `docker/docker-compose.prod.yml`
 
 > Dúvidas? Consulte a documentação em `docs/` ou o professor.

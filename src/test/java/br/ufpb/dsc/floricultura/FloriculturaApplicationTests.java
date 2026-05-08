@@ -1,8 +1,12 @@
-package br.ufpb.dsc.mercado;
+package br.ufpb.dsc.floricultura;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * Teste de carregamento do contexto Spring Boot.
@@ -27,7 +31,12 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @SpringBootTest
 @ActiveProfiles("test")
-class MercadoApplicationTests {
+@Testcontainers
+class FloriculturaApplicationTests {
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
 
     /**
      * Verifica que o contexto Spring Boot carrega sem erros.

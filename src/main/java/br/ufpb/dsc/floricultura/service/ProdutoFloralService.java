@@ -1,9 +1,9 @@
-package br.ufpb.dsc.mercado.service;
+package br.ufpb.dsc.floricultura.service;
 
-import br.ufpb.dsc.mercado.domain.Produto;
-import br.ufpb.dsc.mercado.dto.ProdutoForm;
-import br.ufpb.dsc.mercado.exception.ProdutoNaoEncontradoException;
-import br.ufpb.dsc.mercado.repository.ProdutoRepository;
+import br.ufpb.dsc.floricultura.domain.ProdutoFloral;
+import br.ufpb.dsc.floricultura.dto.ProdutoFloralForm;
+import br.ufpb.dsc.floricultura.exception.ProdutoFloralNaoEncontradoException;
+import br.ufpb.dsc.floricultura.repository.ProdutoFloralRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
- * Serviço de negócio para operações relacionadas a {@link Produto}.
+ * Serviço de negócio para operações relacionadas a {@link ProdutoFloral}.
  *
  * <p><strong>O que é a camada de Service?</strong><br>
  * O Service é responsável pela lógica de negócio da aplicação. Ele fica entre o
@@ -36,10 +36,10 @@ import org.springframework.util.StringUtils;
 // @Transactional(readOnly = true) como padrão da classe melhora performance em leituras,
 // pois informa ao banco que não haverá escrita nesta transação.
 @Transactional(readOnly = true)
-public class ProdutoService {
+public class ProdutoFloralService {
 
     // Injeção de dependência via construtor — prática recomendada pelo Spring e mais testável
-    private final ProdutoRepository produtoRepository;
+    private final ProdutoFloralRepository produtoFloralRepository;
 
     /**
      * Construtor com injeção de dependência.
@@ -48,10 +48,10 @@ public class ProdutoService {
      * A injeção via construtor é preferível à injeção via campo ({@code @Autowired} no campo)
      * porque torna as dependências explícitas e facilita os testes unitários com Mockito.
      *
-     * @param produtoRepository repositório JPA de produtos
+     * @param produtoFloralRepository repositório JPA de produtos
      */
-    public ProdutoService(ProdutoRepository produtoRepository) {
-        this.produtoRepository = produtoRepository;
+    public ProdutoFloralService(ProdutoFloralRepository produtoFloralRepository) {
+        this.produtoFloralRepository = produtoFloralRepository;
     }
 
     /**
@@ -63,8 +63,8 @@ public class ProdutoService {
      * @param pageable configuração de página, tamanho e ordenação
      * @return página de produtos
      */
-    public Page<Produto> listar(Pageable pageable) {
-        return produtoRepository.findAll(pageable);
+    public Page<ProdutoFloral> listar(Pageable pageable) {
+        return produtoFloralRepository.findAll(pageable);
     }
 
     /**
@@ -75,11 +75,12 @@ public class ProdutoService {
      * @param pageable configuração de paginação
      * @return página de produtos filtrados
      */
-    public Page<Produto> buscar(String busca, Pageable pageable) {
+    public Page<ProdutoFloral> buscar(String busca, Pageable pageable) {
         if (!StringUtils.hasText(busca)) {
-            return produtoRepository.findAll(pageable);
+            return produtoFloralRepository.findAll(pageable);
         }
-        return produtoRepository.findByNomeContainingIgnoreCase(busca.trim(), pageable);
+        String termo = busca.trim();
+        return produtoFloralRepository.findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(termo, termo, pageable);
     }
 
     /**
@@ -90,11 +91,11 @@ public class ProdutoService {
      *
      * @param id identificador do produto
      * @return produto encontrado
-     * @throws ProdutoNaoEncontradoException se nenhum produto for encontrado com o ID informado
+     * @throws ProdutoFloralNaoEncontradoException se nenhum produto for encontrado com o ID informado
      */
-    public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id)
-                .orElseThrow(() -> new ProdutoNaoEncontradoException(id));
+    public ProdutoFloral buscarPorId(Long id) {
+        return produtoFloralRepository.findById(id)
+                .orElseThrow(() -> new ProdutoFloralNaoEncontradoException(id));
     }
 
     /**
@@ -107,14 +108,17 @@ public class ProdutoService {
      * @return produto criado e persistido com ID gerado
      */
     @Transactional
-    public Produto criar(ProdutoForm form) {
-        Produto produto = new Produto(
-                form.nome(),
-                form.descricao(),
-                form.preco()
+    public ProdutoFloral criar(ProdutoFloralForm form) {
+        ProdutoFloral produtoFloral = new ProdutoFloral(
+                form.nome().trim(),
+                normalizarTexto(form.descricao()),
+                form.preco(),
+                form.categoria(),
+                normalizarTexto(form.cor()),
+                form.quantidadeEstoque()
         );
         // O método save() do JpaRepository faz o INSERT e retorna a entidade com o ID gerado
-        return produtoRepository.save(produto);
+        return produtoFloralRepository.save(produtoFloral);
     }
 
     /**
@@ -130,17 +134,24 @@ public class ProdutoService {
      * @param id   identificador do produto a ser atualizado
      * @param form novos dados validados
      * @return produto atualizado
-     * @throws ProdutoNaoEncontradoException se o produto não existir
+     * @throws ProdutoFloralNaoEncontradoException se o produto não existir
      */
     @Transactional
-    public Produto atualizar(Long id, ProdutoForm form) {
-        Produto produto = buscarPorId(id);
-        produto.setNome(form.nome());
-        produto.setDescricao(form.descricao());
-        produto.setPreco(form.preco());
+    public ProdutoFloral atualizar(Long id, ProdutoFloralForm form) {
+        ProdutoFloral produtoFloral = buscarPorId(id);
+        produtoFloral.setNome(form.nome().trim());
+        produtoFloral.setDescricao(normalizarTexto(form.descricao()));
+        produtoFloral.setPreco(form.preco());
+        produtoFloral.setCategoria(form.categoria());
+        produtoFloral.setCor(normalizarTexto(form.cor()));
+        produtoFloral.setQuantidadeEstoque(form.quantidadeEstoque());
         // Não precisa chamar save() explicitamente — o JPA (dirty checking) detecta a mudança
         // e executa o UPDATE automaticamente ao final da transação
-        return produtoRepository.save(produto);
+        return produtoFloralRepository.save(produtoFloral);
+    }
+
+    private String normalizarTexto(String texto) {
+        return StringUtils.hasText(texto) ? texto.trim() : null;
     }
 
     /**
@@ -150,14 +161,14 @@ public class ProdutoService {
      * em vez de deixar o banco retornar um erro genérico.
      *
      * @param id identificador do produto a ser excluído
-     * @throws ProdutoNaoEncontradoException se o produto não existir
+     * @throws ProdutoFloralNaoEncontradoException se o produto não existir
      */
     @Transactional
     public void excluir(Long id) {
         // Verifica existência para dar mensagem de erro clara
-        if (!produtoRepository.existsById(id)) {
-            throw new ProdutoNaoEncontradoException(id);
+        if (!produtoFloralRepository.existsById(id)) {
+            throw new ProdutoFloralNaoEncontradoException(id);
         }
-        produtoRepository.deleteById(id);
+        produtoFloralRepository.deleteById(id);
     }
 }

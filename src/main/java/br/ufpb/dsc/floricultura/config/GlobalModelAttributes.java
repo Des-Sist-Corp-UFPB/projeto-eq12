@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.config;
+package br.ufpb.dsc.floricultura.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  *
  * <p>Uso no template Thymeleaf:
  * <pre>
- *   {@code th:classappend="${requestURI.startsWith('/produtos')} ? 'active'"}
+ *   {@code th:classappend="${requestURI.startsWith('/produtos-florais')} ? 'active'"}
  * </pre>
  *
  * @author DSC - UFPB Campus IV
@@ -37,7 +37,7 @@ public class GlobalModelAttributes {
      * <p>Utilizado pelo layout para marcar o item de menu ativo na navbar.
      *
      * @param request objeto da requisição HTTP injetado pelo Spring
-     * @return URI da requisição atual (ex.: "/produtos", "/produtos/novo")
+     * @return URI da requisição atual (ex.: "/produtos-florais", "/produtos-florais/novo")
      */
     @ModelAttribute("requestURI")
     public String requestURI(HttpServletRequest request) {

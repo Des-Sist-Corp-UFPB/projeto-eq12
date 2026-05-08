@@ -1,9 +1,10 @@
-package br.ufpb.dsc.mercado.controller;
+package br.ufpb.dsc.floricultura.controller;
 
-import br.ufpb.dsc.mercado.domain.Produto;
-import br.ufpb.dsc.mercado.dto.ProdutoForm;
-import br.ufpb.dsc.mercado.exception.ProdutoNaoEncontradoException;
-import br.ufpb.dsc.mercado.service.ProdutoService;
+import br.ufpb.dsc.floricultura.domain.CategoriaProdutoFloral;
+import br.ufpb.dsc.floricultura.domain.ProdutoFloral;
+import br.ufpb.dsc.floricultura.dto.ProdutoFloralForm;
+import br.ufpb.dsc.floricultura.exception.ProdutoFloralNaoEncontradoException;
+import br.ufpb.dsc.floricultura.service.ProdutoFloralService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,18 +41,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author DSC - UFPB Campus IV
  */
 @Controller
-@RequestMapping("/produtos")
-public class ProdutoController {
+@RequestMapping("/produtos-florais")
+public class ProdutoFloralController {
 
     private static final int TAMANHO_PAGINA = 10;
 
     // Header enviado pelo HTMX em toda requisição feita pela biblioteca
     private static final String HEADER_HTMX = "HX-Request";
 
-    private final ProdutoService produtoService;
+    private final ProdutoFloralService produtoFloralService;
 
-    public ProdutoController(ProdutoService produtoService) {
-        this.produtoService = produtoService;
+    public ProdutoFloralController(ProdutoFloralService produtoFloralService) {
+        this.produtoFloralService = produtoFloralService;
     }
 
     // =========================================================================
@@ -79,20 +80,20 @@ public class ProdutoController {
 
         // Cria configuração de paginação: página atual, tamanho e ordenação por nome
         PageRequest pageRequest = PageRequest.of(pagina, TAMANHO_PAGINA, Sort.by("nome").ascending());
-        Page<Produto> produtos = produtoService.buscar(busca, pageRequest);
+        Page<ProdutoFloral> produtosFlorais = produtoFloralService.buscar(busca, pageRequest);
 
-        model.addAttribute("produtos", produtos);
+        model.addAttribute("produtosFlorais", produtosFlorais);
         model.addAttribute("busca", busca);
         model.addAttribute("paginaAtual", pagina);
 
         // Se for requisição HTMX, retorna apenas o fragmento da tabela (mais eficiente)
         // O HTMX substitui apenas o elemento alvo, sem recarregar toda a página
         if (htmx != null) {
-            return "produtos/fragments/tabela :: tabela";
+            return "produtos-florais/fragments/tabela :: tabela";
         }
 
         // Requisição normal do navegador → página completa
-        return "produtos/lista";
+        return "produtos-florais/lista";
     }
 
     /**
@@ -111,14 +112,14 @@ public class ProdutoController {
             Model model) {
 
         PageRequest pageRequest = PageRequest.of(pagina, TAMANHO_PAGINA, Sort.by("nome").ascending());
-        Page<Produto> produtos = produtoService.buscar(busca, pageRequest);
+        Page<ProdutoFloral> produtosFlorais = produtoFloralService.buscar(busca, pageRequest);
 
-        model.addAttribute("produtos", produtos);
+        model.addAttribute("produtosFlorais", produtosFlorais);
         model.addAttribute("busca", busca);
         model.addAttribute("paginaAtual", pagina);
 
         // Sempre retorna apenas o fragmento (este endpoint é exclusivo do HTMX)
-        return "produtos/fragments/tabela :: tabela";
+        return "produtos-florais/fragments/tabela :: tabela";
     }
 
     // =========================================================================
@@ -128,9 +129,9 @@ public class ProdutoController {
     /**
      * Retorna o fragmento do formulário para criar um novo produto.
      *
-     * <p>Chamado pelo HTMX quando o usuário clica em "Novo Produto":
+     * <p>Chamado pelo HTMX quando o usuário clica em "Novo Produto Floral":
      * <pre>
-     *   hx-get="/produtos/novo" hx-target="#modal-container"
+     *   hx-get="/produtos-florais/novo" hx-target="#modal-container"
      * </pre>
      *
      * @param model modelo Thymeleaf
@@ -139,9 +140,10 @@ public class ProdutoController {
     @GetMapping("/novo")
     public String novoForm(Model model) {
         // Passa um form vazio para o Thymeleaf vincular com th:object
-        model.addAttribute("form", new ProdutoForm(null, null, null));
-        model.addAttribute("produto", null); // sem produto = modo criação
-        return "produtos/fragments/form :: modal";
+        model.addAttribute("form", new ProdutoFloralForm(null, null, null, CategoriaProdutoFloral.FLOR_CORTE, null, 0));
+        model.addAttribute("produtoFloral", null); // sem produto = modo criação
+        adicionarOpcoesFormulario(model);
+        return "produtos-florais/fragments/form :: modal";
     }
 
     /**
@@ -149,7 +151,7 @@ public class ProdutoController {
      *
      * <p>Chamado pelo HTMX quando o usuário clica em "Editar":
      * <pre>
-     *   hx-get="/produtos/{id}/editar" hx-target="#modal-container"
+     *   hx-get="/produtos-florais/{id}/editar" hx-target="#modal-container"
      * </pre>
      *
      * @param id    ID do produto a editar
@@ -158,12 +160,14 @@ public class ProdutoController {
      */
     @GetMapping("/{id}/editar")
     public String editarForm(@PathVariable Long id, Model model) {
-        Produto produto = produtoService.buscarPorId(id);
+        ProdutoFloral produtoFloral = produtoFloralService.buscarPorId(id);
         // Converte entidade para form (preenche os campos do formulário)
-        ProdutoForm form = new ProdutoForm(produto.getNome(), produto.getDescricao(), produto.getPreco());
+        ProdutoFloralForm form = new ProdutoFloralForm(produtoFloral.getNome(), produtoFloral.getDescricao(), produtoFloral.getPreco(),
+                produtoFloral.getCategoria(), produtoFloral.getCor(), produtoFloral.getQuantidadeEstoque());
         model.addAttribute("form", form);
-        model.addAttribute("produto", produto); // com produto = modo edição
-        return "produtos/fragments/form :: modal";
+        model.addAttribute("produtoFloral", produtoFloral); // com produto = modo edição
+        adicionarOpcoesFormulario(model);
+        return "produtos-florais/fragments/form :: modal";
     }
 
     // =========================================================================
@@ -178,8 +182,8 @@ public class ProdutoController {
      *
      * <p>Fluxo HTMX esperado no formulário:
      * <pre>
-     *   hx-post="/produtos"
-     *   hx-target="#lista-produtos"
+     *   hx-post="/produtos-florais"
+     *   hx-target="#lista-produtos-florais"
      *   hx-swap="beforeend"
      * </pre>
      * Isso adiciona a nova linha ao final da tabela sem recarregar.
@@ -191,21 +195,22 @@ public class ProdutoController {
      */
     @PostMapping
     public String criar(
-            @Valid @ModelAttribute("form") ProdutoForm form,
+            @Valid @ModelAttribute("form") ProdutoFloralForm form,
             BindingResult bindingResult,
             Model model) {
 
         // Se houver erros de validação, retorna o formulário com as mensagens de erro
         if (bindingResult.hasErrors()) {
-            model.addAttribute("produto", null);
-            return "produtos/fragments/form :: modal";
+            model.addAttribute("produtoFloral", null);
+            adicionarOpcoesFormulario(model);
+            return "produtos-florais/fragments/form :: modal";
         }
 
-        Produto novoProduto = produtoService.criar(form);
-        model.addAttribute("produto", novoProduto);
+        ProdutoFloral novoProdutoFloral = produtoFloralService.criar(form);
+        model.addAttribute("produtoFloral", novoProdutoFloral);
 
         // Retorna apenas a linha da tabela para ser inserida via HTMX (hx-swap="beforeend")
-        return "produtos/fragments/linha :: linha";
+        return "produtos-florais/fragments/linha :: linha";
     }
 
     // =========================================================================
@@ -217,8 +222,8 @@ public class ProdutoController {
      *
      * <p>Fluxo HTMX esperado:
      * <pre>
-     *   hx-put="/produtos/{id}"
-     *   hx-target="#produto-{id}"
+     *   hx-put="/produtos-florais/{id}"
+     *   hx-target="#produto-floral-{id}"
      *   hx-swap="outerHTML"
      * </pre>
      * Isso substitui a linha existente pela linha atualizada.
@@ -232,22 +237,23 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public String atualizar(
             @PathVariable Long id,
-            @Valid @ModelAttribute("form") ProdutoForm form,
+            @Valid @ModelAttribute("form") ProdutoFloralForm form,
             BindingResult bindingResult,
             Model model) {
 
         if (bindingResult.hasErrors()) {
             // Recarrega o produto para o formulário saber que está em modo edição
-            Produto produto = produtoService.buscarPorId(id);
-            model.addAttribute("produto", produto);
-            return "produtos/fragments/form :: modal";
+            ProdutoFloral produtoFloral = produtoFloralService.buscarPorId(id);
+            model.addAttribute("produtoFloral", produtoFloral);
+            adicionarOpcoesFormulario(model);
+            return "produtos-florais/fragments/form :: modal";
         }
 
-        Produto produtoAtualizado = produtoService.atualizar(id, form);
-        model.addAttribute("produto", produtoAtualizado);
+        ProdutoFloral produtoFloralAtualizado = produtoFloralService.atualizar(id, form);
+        model.addAttribute("produtoFloral", produtoFloralAtualizado);
 
         // Retorna a linha atualizada para substituir a linha antiga (hx-swap="outerHTML")
-        return "produtos/fragments/linha :: linha";
+        return "produtos-florais/fragments/linha :: linha";
     }
 
     // =========================================================================
@@ -260,8 +266,8 @@ public class ProdutoController {
      * <p>O HTMX com {@code hx-swap="outerHTML"} e um body vazio remove o elemento do DOM.
      * Fluxo esperado no template:
      * <pre>
-     *   hx-delete="/produtos/{id}"
-     *   hx-target="#produto-{id}"
+     *   hx-delete="/produtos-florais/{id}"
+     *   hx-target="#produto-floral-{id}"
      *   hx-swap="outerHTML"
      *   hx-confirm="Confirma exclusão?"
      * </pre>
@@ -276,11 +282,15 @@ public class ProdutoController {
     @ResponseBody
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         try {
-            produtoService.excluir(id);
+            produtoFloralService.excluir(id);
             // 200 OK com body vazio → HTMX substitui o elemento por nada (remove da tela)
             return ResponseEntity.ok().build();
-        } catch (ProdutoNaoEncontradoException e) {
+        } catch (ProdutoFloralNaoEncontradoException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private void adicionarOpcoesFormulario(Model model) {
+        model.addAttribute("categorias", CategoriaProdutoFloral.values());
     }
 }

@@ -1,5 +1,6 @@
-package br.ufpb.dsc.mercado.dto;
+package br.ufpb.dsc.floricultura.dto;
 
+import br.ufpb.dsc.floricultura.domain.CategoriaProdutoFloral;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -33,7 +34,7 @@ import java.math.BigDecimal;
  *
  * @author DSC - UFPB Campus IV
  */
-public record ProdutoForm(
+public record ProdutoFloralForm(
 
         /**
          * {@code @NotBlank} falha se o valor for {@code null}, vazio ("") ou apenas espaços.
@@ -59,7 +60,18 @@ public record ProdutoForm(
         @NotNull(message = "O preço é obrigatório")
         @DecimalMin(value = "0.00", message = "O preço não pode ser negativo")
         @Digits(integer = 8, fraction = 2, message = "Preço deve ter no máximo 8 dígitos inteiros e 2 decimais")
-        BigDecimal preco
+        BigDecimal preco,
+
+        @NotNull(message = "A categoria é obrigatória")
+        CategoriaProdutoFloral categoria,
+
+        @Size(max = 60, message = "A cor pode ter no máximo 60 caracteres")
+        String cor,
+
+        @NotNull(message = "A quantidade em estoque é obrigatória")
+        @Min(value = 0, message = "A quantidade em estoque não pode ser negativa")
+        @Max(value = 9999, message = "A quantidade em estoque deve ser menor que 10000")
+        Integer quantidadeEstoque
 
 ) {
 }

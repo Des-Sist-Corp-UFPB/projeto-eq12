@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.config;
+package br.ufpb.dsc.floricultura.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -118,10 +118,10 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         // URL da página de login customizada (em vez da padrão do Spring Security)
                         .loginPage("/login")
-                        // Após login bem-sucedido, redireciona para /produtos
+                        // Após login bem-sucedido, redireciona para /produtos-florais
                         // O segundo parâmetro (true) força sempre ir para esta URL,
                         // ignorando a URL que o usuário tentou acessar antes do login
-                        .defaultSuccessUrl("/produtos", true)
+                        .defaultSuccessUrl("/produtos-florais", true)
                         // A página de login deve ser acessível sem autenticação
                         .permitAll()
                 )
@@ -141,7 +141,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         // Desabilita CSRF apenas para os endpoints de produtos (usados pelo HTMX)
                         // ALTERNATIVA SEGURA: configure HTMX para enviar o token CSRF nos headers
-                        .ignoringRequestMatchers("/produtos/**")
+                        .ignoringRequestMatchers("/produtos-florais/**")
                 );
 
         return http.build();

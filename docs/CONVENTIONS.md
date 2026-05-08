@@ -20,7 +20,7 @@ feat: adicionar filtro por categoria de produto
 fix: corrigir cálculo de desconto no preço
 docs: atualizar README com instruções de deploy
 refactor: extrair validação de preço para método privado
-test: adicionar teste de integração para ProdutoService
+test: adicionar teste de integração para ProdutoFloralService
 chore: atualizar dependências do pom.xml
 ```
 
@@ -28,11 +28,11 @@ chore: atualizar dependências do pom.xml
 
 | Elemento | Convenção | Exemplo |
 |---|---|---|
-| Package | lowercase | `br.ufpb.dsc.mercado.service` |
-| Classe | PascalCase | `ProdutoService` |
+| Package | lowercase | `br.ufpb.dsc.floricultura.service` |
+| Classe | PascalCase | `ProdutoFloralService` |
 | Método | camelCase | `buscarPorId()` |
 | Constante | UPPER_SNAKE | `MAX_NOME_LENGTH` |
-| Variável | camelCase | `produtoForm` |
+| Variável | camelCase | `produtoFloralForm` |
 
 ## Padrão de Fragment HTMX
 

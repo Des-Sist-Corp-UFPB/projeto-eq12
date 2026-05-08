@@ -1,4 +1,4 @@
-package br.ufpb.dsc.mercado.domain;
+package br.ufpb.dsc.floricultura.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -28,7 +28,7 @@ import java.time.Instant;
 @Entity
 // @Table define o nome exato da tabela no banco. Sem ela, o JPA usaria o nome da classe.
 @Table(name = "produto")
-public class Produto {
+public class ProdutoFloral {
 
     /**
      * Identificador único do produto.
@@ -82,6 +82,21 @@ public class Produto {
     @Column(name = "preco", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
+    @NotNull(message = "A categoria e obrigatoria")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "categoria", nullable = false, length = 30)
+    private CategoriaProdutoFloral categoria = CategoriaProdutoFloral.FLOR_CORTE;
+
+    @Size(max = 60, message = "A cor pode ter no maximo 60 caracteres")
+    @Column(name = "cor", length = 60)
+    private String cor;
+
+    @NotNull(message = "A quantidade em estoque e obrigatoria")
+    @Min(value = 0, message = "A quantidade em estoque nao pode ser negativa")
+    @Max(value = 9999, message = "A quantidade em estoque deve ser menor que 10000")
+    @Column(name = "quantidade_estoque", nullable = false)
+    private Integer quantidadeEstoque = 0;
+
     /**
      * Data e hora de criação do registro.
      *
@@ -111,6 +126,7 @@ public class Produto {
      */
     @PrePersist
     protected void prePersist() {
+        preencherPadroesFloricultura();
         Instant agora = Instant.now();
         this.criadoEm = agora;
         this.atualizadoEm = agora;
@@ -123,7 +139,17 @@ public class Produto {
      */
     @PreUpdate
     protected void preUpdate() {
+        preencherPadroesFloricultura();
         this.atualizadoEm = Instant.now();
+    }
+
+    private void preencherPadroesFloricultura() {
+        if (this.categoria == null) {
+            this.categoria = CategoriaProdutoFloral.FLOR_CORTE;
+        }
+        if (this.quantidadeEstoque == null) {
+            this.quantidadeEstoque = 0;
+        }
     }
 
     // =========================================================================
@@ -134,7 +160,7 @@ public class Produto {
      * Construtor padrão exigido pelo JPA.
      * O JPA precisa instanciar a entidade via reflexão ao carregar do banco.
      */
-    public Produto() {
+    public ProdutoFloral() {
     }
 
     /**
@@ -144,10 +170,18 @@ public class Produto {
      * @param descricao descrição opcional
      * @param preco     preço do produto
      */
-    public Produto(String nome, String descricao, BigDecimal preco) {
+    public ProdutoFloral(String nome, String descricao, BigDecimal preco) {
+        this(nome, descricao, preco, CategoriaProdutoFloral.FLOR_CORTE, null, 0);
+    }
+
+    public ProdutoFloral(String nome, String descricao, BigDecimal preco, CategoriaProdutoFloral categoria,
+                   String cor, Integer quantidadeEstoque) {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
+        this.categoria = categoria;
+        this.cor = cor;
+        this.quantidadeEstoque = quantidadeEstoque;
     }
 
     // =========================================================================
@@ -186,6 +220,34 @@ public class Produto {
         this.preco = preco;
     }
 
+    public CategoriaProdutoFloral getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaProdutoFloral categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getCor() {
+        return cor;
+    }
+
+    public void setCor(String cor) {
+        this.cor = cor;
+    }
+
+    public Integer getQuantidadeEstoque() {
+        return quantidadeEstoque;
+    }
+
+    public void setQuantidadeEstoque(Integer quantidadeEstoque) {
+        this.quantidadeEstoque = quantidadeEstoque;
+    }
+
+    public boolean isDisponivel() {
+        return quantidadeEstoque != null && quantidadeEstoque > 0;
+    }
+
     public Instant getCriadoEm() {
         return criadoEm;
     }
@@ -204,6 +266,7 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "Produto{id=" + id + ", nome='" + nome + "', preco=" + preco + "}";
+        return "ProdutoFloral{id=" + id + ", nome='" + nome + "', categoria=" + categoria
+                + ", preco=" + preco + ", quantidadeEstoque=" + quantidadeEstoque + "}";
     }
 }
