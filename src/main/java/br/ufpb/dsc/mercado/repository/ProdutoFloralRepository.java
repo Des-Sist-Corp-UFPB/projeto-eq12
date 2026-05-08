@@ -1,13 +1,13 @@
 package br.ufpb.dsc.mercado.repository;
 
-import br.ufpb.dsc.mercado.domain.Produto;
+import br.ufpb.dsc.mercado.domain.ProdutoFloral;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repositório Spring Data JPA para a entidade {@link Produto}.
+ * Repositório Spring Data JPA para a entidade {@link ProdutoFloral}.
  *
  * <p><strong>O que é Spring Data JPA?</strong><br>
  * Spring Data JPA elimina a necessidade de escrever implementações de repositório manualmente.
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Repository;
  * <p>Exemplo de uso:
  * <pre>
  *   Pageable pageable = PageRequest.of(0, 10, Sort.by("nome"));
- *   Page&lt;Produto&gt; pagina = repository.findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(
+ *   Page&lt;ProdutoFloral&gt; pagina = repository.findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(
  *       "rosa", "rosa", pageable);
  * </pre>
  *
@@ -43,14 +43,14 @@ import org.springframework.stereotype.Repository;
  * @see org.springframework.data.domain.Pageable
  */
 @Repository // Opcional quando se estende JpaRepository, mas documenta a intenção
-public interface ProdutoRepository extends JpaRepository<Produto, Long> {
+public interface ProdutoFloralRepository extends JpaRepository<ProdutoFloral, Long> {
 
     /**
      * Busca produtos cujo nome ou cor contenha o texto informado, sem distinção de maiúsculas/minúsculas.
      *
      * <p>O Spring Data JPA traduz este método para a query JPQL:
      * <pre>
-     *   SELECT p FROM Produto p WHERE LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%'))
+     *   SELECT p FROM ProdutoFloral p WHERE LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%'))
      * </pre>
      *
      * <p>Palavras-chave do método:
@@ -65,5 +65,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
      * @param pageable configuração de paginação e ordenação
      * @return página de produtos que correspondem ao critério de busca
      */
-    Page<Produto> findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(String nome, String cor, Pageable pageable);
+    Page<ProdutoFloral> findByNomeContainingIgnoreCaseOrCorContainingIgnoreCase(String nome, String cor, Pageable pageable);
 }

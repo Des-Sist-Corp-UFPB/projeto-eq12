@@ -1,8 +1,8 @@
 package br.ufpb.dsc.mercado.controller;
 
-import br.ufpb.dsc.mercado.domain.CategoriaProduto;
-import br.ufpb.dsc.mercado.domain.Produto;
-import br.ufpb.dsc.mercado.repository.ProdutoRepository;
+import br.ufpb.dsc.mercado.domain.CategoriaProdutoFloral;
+import br.ufpb.dsc.mercado.domain.ProdutoFloral;
+import br.ufpb.dsc.mercado.repository.ProdutoFloralRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Testes de integração do {@link ProdutoController} com Testcontainers.
+ * Testes de integração do {@link ProdutoFloralController} com Testcontainers.
  *
  * <p><strong>Testcontainers:</strong><br>
  * Testcontainers é uma biblioteca Java que permite usar containers Docker nos testes.
@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * <p><strong>{@code @WithMockUser}:</strong><br>
  * Simula um usuário autenticado sem precisar passar pelo processo real de login.
- * Necessário porque todos os endpoints de /produtos exigem autenticação.
+ * Necessário porque todos os endpoints de /produtos-florais exigem autenticação.
  *
  * @author DSC - UFPB Campus IV
  */
@@ -57,8 +57,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Testcontainers // Ativa o gerenciamento automático dos containers pelo JUnit 5
 @ActiveProfiles("test")
-@DisplayName("ProdutoController — Testes de Integração")
-class ProdutoControllerTest {
+@DisplayName("ProdutoFloralController — Testes de Integração")
+class ProdutoFloralControllerTest {
 
     /**
      * Container PostgreSQL gerenciado pelo Testcontainers.
@@ -81,9 +81,9 @@ class ProdutoControllerTest {
     private MockMvc mockMvc; // Simula requisições HTTP
 
     @Autowired
-    private ProdutoRepository produtoRepository; // Para preparar dados de teste
+    private ProdutoFloralRepository produtoFloralRepository; // Para preparar dados de teste
 
-    private Produto produtoCadastrado;
+    private ProdutoFloral produtoFloralCadastrado;
 
     /**
      * Configuração executada antes de cada teste.
@@ -92,68 +92,68 @@ class ProdutoControllerTest {
     @BeforeEach
     void setUp() {
         // Limpa o banco antes de cada teste para evitar interferência entre eles
-        produtoRepository.deleteAll();
+        produtoFloralRepository.deleteAll();
 
         // Cria um produto de teste para os cenários que precisam de dado existente
-        produtoCadastrado = produtoRepository.save(
-                new Produto("Rosa Vermelha", "Flor de corte para buques",
-                        new BigDecimal("12.90"), CategoriaProduto.FLOR_CORTE, "Vermelha", 24)
+        produtoFloralCadastrado = produtoFloralRepository.save(
+                new ProdutoFloral("Rosa Vermelha", "Flor de corte para buques",
+                        new BigDecimal("12.90"), CategoriaProdutoFloral.FLOR_CORTE, "Vermelha", 24)
         );
     }
 
     // =========================================================================
-    // TESTES: GET /produtos
+    // TESTES: GET /produtos-florais
     // =========================================================================
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN") // Simula usuário autenticado
-    @DisplayName("GET /produtos: deve retornar página de listagem com status 200")
+    @DisplayName("GET /produtos-florais: deve retornar página de listagem com status 200")
     void listar_usuarioAutenticado_deveRetornarPaginaLista() throws Exception {
-        mockMvc.perform(get("/produtos"))
+        mockMvc.perform(get("/produtos-florais"))
                 // Verifica o status HTTP 200 OK
                 .andExpect(status().isOk())
                 // Verifica que a view retornada é a correta
-                .andExpect(view().name("produtos/lista"))
+                .andExpect(view().name("produtos-florais/lista"))
                 // Verifica que o model contém o atributo "produtos"
-                .andExpect(model().attributeExists("produtos"))
+                .andExpect(model().attributeExists("produtosFlorais"))
                 // Verifica que o HTML contém o nome do produto cadastrado
                 .andExpect(content().string(containsString("Rosa Vermelha")));
     }
 
     @Test
-    @DisplayName("GET /produtos: usuário não autenticado deve ser redirecionado para /login")
+    @DisplayName("GET /produtos-florais: usuário não autenticado deve ser redirecionado para /login")
     void listar_semAutenticacao_deveRedirecionarParaLogin() throws Exception {
-        mockMvc.perform(get("/produtos"))
+        mockMvc.perform(get("/produtos-florais"))
                 // Spring Security redireciona (302) para a página de login
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/login"));
     }
 
     // =========================================================================
-    // TESTES: GET /produtos/novo
+    // TESTES: GET /produtos-florais/novo
     // =========================================================================
 
     @Test
     @WithMockUser
-    @DisplayName("GET /produtos/novo: deve retornar fragmento do formulário vazio")
+    @DisplayName("GET /produtos-florais/novo: deve retornar fragmento do formulário vazio")
     void novoForm_deveRetornarFragmentoFormulario() throws Exception {
-        mockMvc.perform(get("/produtos/novo"))
+        mockMvc.perform(get("/produtos-florais/novo"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("produtos/fragments/form :: modal"))
+                .andExpect(view().name("produtos-florais/fragments/form :: modal"))
                 .andExpect(model().attributeExists("form"))
                 // produto null indica modo de criação
-                .andExpect(model().attribute("produto", nullValue()));
+                .andExpect(model().attribute("produtoFloral", nullValue()));
     }
 
     // =========================================================================
-    // TESTES: POST /produtos
+    // TESTES: POST /produtos-florais
     // =========================================================================
 
     @Test
     @WithMockUser
-    @DisplayName("POST /produtos: deve criar produto e retornar fragmento da linha")
+    @DisplayName("POST /produtos-florais: deve criar produto e retornar fragmento da linha")
     void criar_dadosValidos_deveCriarERetornarLinha() throws Exception {
-        mockMvc.perform(post("/produtos")
+        mockMvc.perform(post("/produtos-florais")
                         // csrf() adiciona o token CSRF para não falhar na proteção CSRF
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -164,17 +164,17 @@ class ProdutoControllerTest {
                         .param("cor", "Branca")
                         .param("quantidadeEstoque", "8"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("produtos/fragments/linha :: linha"))
-                .andExpect(model().attributeExists("produto"))
+                .andExpect(view().name("produtos-florais/fragments/linha :: linha"))
+                .andExpect(model().attributeExists("produtoFloral"))
                 // O HTML retornado deve conter o nome do produto criado
                 .andExpect(content().string(containsString("Orquidea Phalaenopsis")));
     }
 
     @Test
     @WithMockUser
-    @DisplayName("POST /produtos: dados inválidos devem retornar formulário com erros")
+    @DisplayName("POST /produtos-florais: dados inválidos devem retornar formulário com erros")
     void criar_dadosInvalidos_deveRetornarFormularioComErros() throws Exception {
-        mockMvc.perform(post("/produtos")
+        mockMvc.perform(post("/produtos-florais")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("nome", "") // Nome vazio — inválido!
@@ -183,44 +183,44 @@ class ProdutoControllerTest {
                         .param("quantidadeEstoque", "-1"))
                 .andExpect(status().isOk())
                 // Retorna o formulário com erros em vez de criar o produto
-                .andExpect(view().name("produtos/fragments/form :: modal"))
+                .andExpect(view().name("produtos-florais/fragments/form :: modal"))
                 // O model deve ter erros de validação
                 .andExpect(model().hasErrors());
     }
 
     // =========================================================================
-    // TESTES: GET /produtos/{id}/editar
+    // TESTES: GET /produtos-florais/{id}/editar
     // =========================================================================
 
     @Test
     @WithMockUser
-    @DisplayName("GET /produtos/{id}/editar: deve retornar formulário preenchido")
+    @DisplayName("GET /produtos-florais/{id}/editar: deve retornar formulário preenchido")
     void editarForm_produtoExistente_deveRetornarFormularioPreenchido() throws Exception {
-        mockMvc.perform(get("/produtos/{id}/editar", produtoCadastrado.getId()))
+        mockMvc.perform(get("/produtos-florais/{id}/editar", produtoFloralCadastrado.getId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("produtos/fragments/form :: modal"))
-                .andExpect(model().attributeExists("form", "produto"))
+                .andExpect(view().name("produtos-florais/fragments/form :: modal"))
+                .andExpect(model().attributeExists("form", "produtoFloral"))
                 .andExpect(content().string(containsString("Rosa Vermelha")));
     }
 
     // =========================================================================
-    // TESTES: DELETE /produtos/{id}
+    // TESTES: DELETE /produtos-florais/{id}
     // =========================================================================
 
     @Test
     @WithMockUser
-    @DisplayName("DELETE /produtos/{id}: deve excluir produto e retornar 200")
+    @DisplayName("DELETE /produtos-florais/{id}: deve excluir produto e retornar 200")
     void excluir_produtoExistente_deveRetornar200() throws Exception {
-        mockMvc.perform(delete("/produtos/{id}", produtoCadastrado.getId())
+        mockMvc.perform(delete("/produtos-florais/{id}", produtoFloralCadastrado.getId())
                         .with(csrf()))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser
-    @DisplayName("DELETE /produtos/{id}: produto inexistente deve retornar 404")
+    @DisplayName("DELETE /produtos-florais/{id}: produto inexistente deve retornar 404")
     void excluir_produtoInexistente_deveRetornar404() throws Exception {
-        mockMvc.perform(delete("/produtos/{id}", 9999L)
+        mockMvc.perform(delete("/produtos-florais/{id}", 9999L)
                         .with(csrf()))
                 .andExpect(status().isNotFound());
     }

@@ -1,7 +1,7 @@
 # Floricultura DSC — Projeto Spring Boot
 
 Aplicação de floricultura para a disciplina **Desenvolvimento de Sistemas Corporativos**.
-O projeto mantém a arquitetura do boilerplate original e evolui o CRUD de produtos para
+O projeto mantém a arquitetura do boilerplate original e evolui o CRUD de produtos florais para
 gerenciar flores, arranjos, plantas, presentes e acessórios.
 
 **Professor**: Rodrigo Rebouças | **UFPB — Campus IV**
@@ -344,7 +344,7 @@ projeto-eq12/
 
 ## Domínio Implementado
 
-O CRUD principal fica em `/produtos` e representa itens de uma floricultura:
+O CRUD principal fica em `/produtos-florais` e representa itens de uma floricultura:
 
 - nome, descrição e preço
 - categoria: flor de corte, arranjo, planta, presente ou acessório

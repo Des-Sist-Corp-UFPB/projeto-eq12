@@ -3,7 +3,7 @@ package br.ufpb.dsc.mercado.domain;
 /**
  * Categorias simples para organizar o catalogo de uma floricultura.
  */
-public enum CategoriaProduto {
+public enum CategoriaProdutoFloral {
 
     FLOR_CORTE("Flor de corte"),
     ARRANJO("Arranjo"),
@@ -13,7 +13,7 @@ public enum CategoriaProduto {
 
     private final String descricao;
 
-    CategoriaProduto(String descricao) {
+    CategoriaProdutoFloral(String descricao) {
         this.descricao = descricao;
     }
 

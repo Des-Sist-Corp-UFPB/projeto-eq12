@@ -25,7 +25,7 @@ Em vez de uma SPA (React/Vue), usamos **HTMX**: o servidor retorna fragmentos HT
 ```
 Browser                         Servidor
   │                               │
-  │  GET /produtos/novo           │
+  │  GET /produtos-florais/novo   │
   │──────────────────────────────►│
   │                               │  Retorna apenas o fragmento HTML do form
   │◄──────────────────────────────│  (não a página inteira)
@@ -60,7 +60,7 @@ V2__adicionar_campo_xxx.sql   ← aplicado quando adicionado (NÃO editar V1!)
 ### Service
 - Anotado com `@Service` e `@Transactional`
 - Contém toda a lógica de negócio
-- Lança exceções de domínio (`ProdutoNaoEncontradoException`)
+- Lança exceções de domínio (`ProdutoFloralNaoEncontradoException`)
 - Usa Repository para persistência
 
 ### Repository

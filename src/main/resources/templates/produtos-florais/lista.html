@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  Página principal de listagem de produtos.
+  Página principal de listagem de produtos florais.
 
   Herança de layout com Thymeleaf — padrão correto:
   - th:replace="~{layout :: layout(~{::main})}" deve estar no elemento <html>,
@@ -13,7 +13,7 @@
 
   Padrão HTMX usado nesta página:
   - Campo de busca: atualiza apenas a tabela sem recarregar a página inteira
-  - Botão Novo Produto: carrega o formulário modal via AJAX
+  - Botão Novo Produto Floral: carrega o formulário modal via AJAX
   - A tabela é um fragmento separado para poder ser atualizada independentemente
 -->
 <html lang="pt-BR"
@@ -35,13 +35,13 @@
         <!--
           Botão que aciona o HTMX para carregar o formulário de novo produto.
 
-          hx-get="/produtos/novo"       → faz GET para o endpoint que retorna o fragmento do formulário
+          hx-get="/produtos-florais/novo"       → faz GET para o endpoint que retorna o fragmento do formulário
           hx-target="#modal-container"  → insere a resposta no div #modal-container (definido no layout)
           hx-swap="innerHTML"           → substitui o conteúdo interno do target
           hx-indicator="#spinner"       → exibe o spinner enquanto a requisição está em andamento
         -->
         <button class="btn btn-primary"
-                hx-get="/produtos/novo"
+                hx-get="/produtos-florais/novo"
                 hx-target="#modal-container"
                 hx-swap="innerHTML"
                 hx-indicator="#spinner">
@@ -66,7 +66,7 @@
                     <!--
                       Campo de busca com HTMX:
 
-                      hx-get="/produtos/fragmento-tabela"       → URL que retorna o fragmento da tabela
+                      hx-get="/produtos-florais/fragmento-tabela"       → URL que retorna o fragmento da tabela
                       hx-trigger="keyup changed delay:400ms"    → dispara após 400ms sem digitar
                                                                    (debounce — evita requisição a cada tecla)
                       hx-target="#tabela-container"             → substitui apenas o container da tabela
@@ -85,7 +85,7 @@
                                class="form-control"
                                placeholder="Buscar por nome ou cor..."
                                th:value="${busca}"
-                               hx-get="/produtos/fragmento-tabela"
+                               hx-get="/produtos-florais/fragmento-tabela"
                                hx-trigger="keyup changed delay:400ms, search"
                                hx-target="#tabela-container"
                                hx-swap="innerHTML"/>
@@ -93,8 +93,8 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <!-- Total de resultados exibido após busca -->
-                    <span class="text-muted small" th:if="${produtos != null}">
-                        <span th:text="${produtos.totalElements}">0</span> item(ns) encontrado(s)
+                    <span class="text-muted small" th:if="${produtosFlorais != null}">
+                        <span th:text="${produtosFlorais.totalElements}">0</span> item(ns) encontrado(s)
                     </span>
                 </div>
             </div>
@@ -110,7 +110,7 @@
                   th:insert inclui o fragmento dentro deste elemento (mantendo o div).
                   Alternativa: th:replace substituiria o próprio div pelo fragmento.
                 -->
-                <th:block th:insert="~{produtos/fragments/tabela :: tabela}"></th:block>
+                <th:block th:insert="~{produtos-florais/fragments/tabela :: tabela}"></th:block>
             </div>
 
         </div>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  Fragmento de uma linha da tabela de produtos.
+  Fragmento de uma linha da tabela de produtos florais.
 
   Este fragmento representa um <tr> único na tabela.
   É utilizado em dois contextos:
@@ -8,32 +8,32 @@
   2. Respostas HTMX: retornado pelo controller após criar (POST) ou atualizar (PUT) um produto,
      para que o HTMX insira ou substitua a linha na tabela sem recarregar a página.
 
-  O id="produto-{id}" no <tr> é fundamental para o HTMX:
+  O id="produto-floral-{id}" no <tr> é fundamental para o HTMX:
   - Na criação: hx-swap="beforeend" no tbody adiciona esta linha ao final.
-  - Na atualização: hx-target="#produto-{id}" hx-swap="outerHTML" substitui a linha existente.
-  - Na exclusão: hx-target="#produto-{id}" hx-swap="outerHTML" + body vazio remove a linha.
+  - Na atualização: hx-target="#produto-floral-{id}" hx-swap="outerHTML" substitui a linha existente.
+  - Na exclusão: hx-target="#produto-floral-{id}" hx-swap="outerHTML" + body vazio remove a linha.
 -->
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
 
 <!--
-  th:fragment="linha(produto)" define o fragmento com parâmetro.
+  th:fragment="linha" define o fragmento da linha.
   Quando chamado via th:insert, o produto é passado explicitamente:
-    th:insert="~{produtos/fragments/linha :: linha(produto=${produto})}"
-  Quando retornado pelo controller, o produto já está no Model como "produto".
+    th:insert="~{produtos-florais/fragments/linha :: linha(produtoFloral=${produtoFloral})}"
+  Quando retornado pelo controller, o produto já está no Model como "produtoFloral".
 -->
 <tr th:fragment="linha"
-    th:id="'produto-' + ${produto.id}">
+    th:id="'produto-floral-' + ${produtoFloral.id}">
 
     <!-- ID do produto -->
-    <td class="text-muted small" th:text="${produto.id}">#1</td>
+    <td class="text-muted small" th:text="${produtoFloral.id}">#1</td>
 
     <!-- Nome do produto -->
     <td>
-        <span class="fw-semibold" th:text="${produto.nome}">Nome do Produto</span>
-        <div th:if="${produto.descricao != null and !produto.descricao.isEmpty()}"
-             th:text="${#strings.abbreviate(produto.descricao, 60)}"
-             th:title="${produto.descricao}"
+        <span class="fw-semibold" th:text="${produtoFloral.nome}">Nome do Produto Floral</span>
+        <div th:if="${produtoFloral.descricao != null and !produtoFloral.descricao.isEmpty()}"
+             th:text="${#strings.abbreviate(produtoFloral.descricao, 60)}"
+             th:title="${produtoFloral.descricao}"
              class="text-muted small">
             Descrição do item...
         </div>
@@ -42,18 +42,18 @@
     <!-- Categoria -->
     <td>
         <span class="badge bg-light text-dark border"
-              th:text="${produto.categoria.descricao}">
+              th:text="${produtoFloral.categoria.descricao}">
             Flor de corte
         </span>
     </td>
 
     <!-- Cor predominante -->
     <td>
-        <span th:if="${produto.cor != null and !produto.cor.isEmpty()}"
-              th:text="${produto.cor}">
+        <span th:if="${produtoFloral.cor != null and !produtoFloral.cor.isEmpty()}"
+              th:text="${produtoFloral.cor}">
             Vermelha
         </span>
-        <span th:unless="${produto.cor != null and !produto.cor.isEmpty()}"
+        <span th:unless="${produtoFloral.cor != null and !produtoFloral.cor.isEmpty()}"
               class="text-muted fst-italic small">
             Sem cor
         </span>
@@ -62,9 +62,9 @@
     <!-- Estoque -->
     <td class="text-center">
         <span class="badge"
-              th:classappend="${produto.disponivel} ? 'bg-success' : 'bg-secondary'">
-            <span th:text="${produto.quantidadeEstoque}">0</span>
-            <span th:text="${produto.disponivel} ? 'disponível' : 'sem estoque'">disponível</span>
+              th:classappend="${produtoFloral.disponivel} ? 'bg-success' : 'bg-secondary'">
+            <span th:text="${produtoFloral.quantidadeEstoque}">0</span>
+            <span th:text="${produtoFloral.disponivel} ? 'disponível' : 'sem estoque'">disponível</span>
         </span>
     </td>
 
@@ -76,7 +76,7 @@
               Parâmetros: valor, mínimo de dígitos inteiros, separador de milhar, casas decimais, separador decimal.
               Resultado: R$ 1.234,56
             -->
-            R$ <span th:text="${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+            R$ <span th:text="${#numbers.formatDecimal(produtoFloral.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
         </span>
     </td>
 
@@ -87,13 +87,13 @@
             <!--
               Botão Editar — HTMX carrega o formulário preenchido no modal.
 
-              hx-get="/produtos/{id}/editar"  → busca o fragmento do formulário com os dados do produto
+              hx-get="/produtos-florais/{id}/editar"  → busca o fragmento do formulário com os dados do produto
               hx-target="#modal-container"    → insere no container do modal (definido no layout)
               hx-swap="innerHTML"             → substitui o conteúdo do container
             -->
             <button type="button"
                     class="btn btn-outline-primary"
-                    th:attr="hx-get='/produtos/' + ${produto.id} + '/editar'"
+                    th:attr="hx-get='/produtos-florais/' + ${produtoFloral.id} + '/editar'"
                     hx-target="#modal-container"
                     hx-swap="innerHTML"
                     title="Editar item">
@@ -106,16 +106,16 @@
             <!--
               Botão Excluir — HTMX envia DELETE e remove a linha da tabela.
 
-              hx-delete="/produtos/{id}"      → envia requisição DELETE para o endpoint
-              hx-target="#produto-{id}"       → alvo é a própria linha (this tr)
+              hx-delete="/produtos-florais/{id}"      → envia requisição DELETE para o endpoint
+              hx-target="#produto-floral-{id}"       → alvo é a própria linha (this tr)
               hx-swap="outerHTML"             → substitui o elemento inteiro (com body vazio = remove)
               hx-confirm                      → exibe diálogo de confirmação nativo do browser
             -->
             <button type="button"
                     class="btn btn-outline-danger"
-                    th:attr="hx-delete='/produtos/' + ${produto.id},
-                             hx-target='#produto-' + ${produto.id},
-                             hx-confirm='Confirma a exclusão do item &quot;' + ${produto.nome} + '&quot;?'"
+                    th:attr="hx-delete='/produtos-florais/' + ${produtoFloral.id},
+                             hx-target='#produto-floral-' + ${produtoFloral.id},
+                             hx-confirm='Confirma a exclusão do item &quot;' + ${produtoFloral.nome} + '&quot;?'"
                     hx-swap="outerHTML"
                     title="Excluir item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"

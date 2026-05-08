@@ -1,6 +1,6 @@
 package br.ufpb.dsc.mercado.dto;
 
-import br.ufpb.dsc.mercado.domain.CategoriaProduto;
+import br.ufpb.dsc.mercado.domain.CategoriaProdutoFloral;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ import java.math.BigDecimal;
  *
  * @author DSC - UFPB Campus IV
  */
-public record ProdutoForm(
+public record ProdutoFloralForm(
 
         /**
          * {@code @NotBlank} falha se o valor for {@code null}, vazio ("") ou apenas espaços.
@@ -63,7 +63,7 @@ public record ProdutoForm(
         BigDecimal preco,
 
         @NotNull(message = "A categoria é obrigatória")
-        CategoriaProduto categoria,
+        CategoriaProdutoFloral categoria,
 
         @Size(max = 60, message = "A cor pode ter no máximo 60 caracteres")
         String cor,

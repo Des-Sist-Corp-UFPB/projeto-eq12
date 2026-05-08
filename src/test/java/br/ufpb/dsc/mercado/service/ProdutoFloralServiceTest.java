@@ -1,10 +1,10 @@
 package br.ufpb.dsc.mercado.service;
 
-import br.ufpb.dsc.mercado.domain.CategoriaProduto;
-import br.ufpb.dsc.mercado.domain.Produto;
-import br.ufpb.dsc.mercado.dto.ProdutoForm;
-import br.ufpb.dsc.mercado.exception.ProdutoNaoEncontradoException;
-import br.ufpb.dsc.mercado.repository.ProdutoRepository;
+import br.ufpb.dsc.mercado.domain.CategoriaProdutoFloral;
+import br.ufpb.dsc.mercado.domain.ProdutoFloral;
+import br.ufpb.dsc.mercado.dto.ProdutoFloralForm;
+import br.ufpb.dsc.mercado.exception.ProdutoFloralNaoEncontradoException;
+import br.ufpb.dsc.mercado.repository.ProdutoFloralRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * Testes unitários para {@link ProdutoService}.
+ * Testes unitários para {@link ProdutoFloralService}.
  *
  * <p><strong>Testes Unitários vs Testes de Integração:</strong>
  * <ul>
@@ -49,22 +49,22 @@ import static org.mockito.Mockito.*;
  * @author DSC - UFPB Campus IV
  */
 @ExtendWith(MockitoExtension.class) // Ativa o suporte ao Mockito no JUnit 5
-@DisplayName("ProdutoService — Testes Unitários")
-class ProdutoServiceTest {
+@DisplayName("ProdutoFloralService — Testes Unitários")
+class ProdutoFloralServiceTest {
 
-    // @Mock cria um objeto falso que simula o ProdutoRepository
+    // @Mock cria um objeto falso que simula o ProdutoFloralRepository
     // Nenhuma consulta real ao banco é feita — tudo é simulado
     @Mock
-    private ProdutoRepository produtoRepository;
+    private ProdutoFloralRepository produtoFloralRepository;
 
-    // @InjectMocks cria uma instância real do ProdutoService
+    // @InjectMocks cria uma instância real do ProdutoFloralService
     // e injeta automaticamente o @Mock acima no construtor
     @InjectMocks
-    private ProdutoService produtoService;
+    private ProdutoFloralService produtoFloralService;
 
     // Dados de teste compartilhados
-    private Produto produtoExistente;
-    private ProdutoForm formValido;
+    private ProdutoFloral produtoFloralExistente;
+    private ProdutoFloralForm formValido;
 
     /**
      * Configuração executada antes de cada teste.
@@ -72,12 +72,12 @@ class ProdutoServiceTest {
      */
     @BeforeEach
     void setUp() {
-        produtoExistente = new Produto("Rosa Vermelha", "Flor de corte para buques",
-                new BigDecimal("12.90"), CategoriaProduto.FLOR_CORTE, "Vermelha", 24);
-        produtoExistente.setId(1L);
+        produtoFloralExistente = new ProdutoFloral("Rosa Vermelha", "Flor de corte para buques",
+                new BigDecimal("12.90"), CategoriaProdutoFloral.FLOR_CORTE, "Vermelha", 24);
+        produtoFloralExistente.setId(1L);
 
-        formValido = new ProdutoForm("Orquidea Phalaenopsis", "Orquidea em vaso",
-                new BigDecimal("89.90"), CategoriaProduto.PLANTA, "Branca", 8);
+        formValido = new ProdutoFloralForm("Orquidea Phalaenopsis", "Orquidea em vaso",
+                new BigDecimal("89.90"), CategoriaProdutoFloral.PLANTA, "Branca", 8);
     }
 
     // =========================================================================
@@ -89,10 +89,10 @@ class ProdutoServiceTest {
     void buscarPorId_quandoIdExiste_deveRetornarProduto() {
         // GIVEN (Arrange) — configura o comportamento do mock
         // "Quando findById(1L) for chamado, retorne o produto de teste"
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoExistente));
+        when(produtoFloralRepository.findById(1L)).thenReturn(Optional.of(produtoFloralExistente));
 
         // WHEN (Act) — executa o método sob teste
-        Produto resultado = produtoService.buscarPorId(1L);
+        ProdutoFloral resultado = produtoFloralService.buscarPorId(1L);
 
         // THEN (Assert) — verifica o resultado
         assertThat(resultado).isNotNull();
@@ -100,21 +100,21 @@ class ProdutoServiceTest {
         assertThat(resultado.getNome()).isEqualTo("Rosa Vermelha");
 
         // Verifica que o repositório foi chamado exatamente uma vez com o ID correto
-        verify(produtoRepository, times(1)).findById(1L);
+        verify(produtoFloralRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("buscarPorId: deve lançar exceção quando ID não existe")
     void buscarPorId_quandoIdNaoExiste_deveLancarExcecao() {
         // GIVEN
-        when(produtoRepository.findById(99L)).thenReturn(Optional.empty());
+        when(produtoFloralRepository.findById(99L)).thenReturn(Optional.empty());
 
         // WHEN + THEN — assertThatThrownBy verifica que a exceção é lançada
-        assertThatThrownBy(() -> produtoService.buscarPorId(99L))
-                .isInstanceOf(ProdutoNaoEncontradoException.class)
+        assertThatThrownBy(() -> produtoFloralService.buscarPorId(99L))
+                .isInstanceOf(ProdutoFloralNaoEncontradoException.class)
                 .hasMessageContaining("99");
 
-        verify(produtoRepository, times(1)).findById(99L);
+        verify(produtoFloralRepository, times(1)).findById(99L);
     }
 
     // =========================================================================
@@ -126,25 +126,25 @@ class ProdutoServiceTest {
     void criar_comFormValido_deveSalvarERetornarProduto() {
         // GIVEN
         // Simula o save() retornando um produto com ID gerado pelo banco
-        Produto produtoSalvo = new Produto(formValido.nome(), formValido.descricao(), formValido.preco(),
+        ProdutoFloral produtoFloralSalvo = new ProdutoFloral(formValido.nome(), formValido.descricao(), formValido.preco(),
                 formValido.categoria(), formValido.cor(), formValido.quantidadeEstoque());
-        produtoSalvo.setId(2L);
-        when(produtoRepository.save(any(Produto.class))).thenReturn(produtoSalvo);
+        produtoFloralSalvo.setId(2L);
+        when(produtoFloralRepository.save(any(ProdutoFloral.class))).thenReturn(produtoFloralSalvo);
 
         // WHEN
-        Produto resultado = produtoService.criar(formValido);
+        ProdutoFloral resultado = produtoFloralService.criar(formValido);
 
         // THEN
         assertThat(resultado).isNotNull();
         assertThat(resultado.getId()).isEqualTo(2L);
         assertThat(resultado.getNome()).isEqualTo("Orquidea Phalaenopsis");
         assertThat(resultado.getPreco()).isEqualByComparingTo("89.90");
-        assertThat(resultado.getCategoria()).isEqualTo(CategoriaProduto.PLANTA);
+        assertThat(resultado.getCategoria()).isEqualTo(CategoriaProdutoFloral.PLANTA);
         assertThat(resultado.getCor()).isEqualTo("Branca");
         assertThat(resultado.getQuantidadeEstoque()).isEqualTo(8);
 
-        // Verifica que save() foi chamado com qualquer Produto (não importa qual instância)
-        verify(produtoRepository, times(1)).save(any(Produto.class));
+        // Verifica que save() foi chamado com qualquer ProdutoFloral (não importa qual instância)
+        verify(produtoFloralRepository, times(1)).save(any(ProdutoFloral.class));
     }
 
     // =========================================================================
@@ -155,37 +155,37 @@ class ProdutoServiceTest {
     @DisplayName("atualizar: deve modificar os dados do produto existente")
     void atualizar_quandoProdutoExiste_deveAtualizarDados() {
         // GIVEN
-        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoExistente));
-        when(produtoRepository.save(any(Produto.class))).thenReturn(produtoExistente);
+        when(produtoFloralRepository.findById(1L)).thenReturn(Optional.of(produtoFloralExistente));
+        when(produtoFloralRepository.save(any(ProdutoFloral.class))).thenReturn(produtoFloralExistente);
 
-        ProdutoForm formAtualizado = new ProdutoForm("Buque Primavera", "Arranjo com flores do campo",
-                new BigDecimal("59.90"), CategoriaProduto.ARRANJO, "Colorido", 5);
+        ProdutoFloralForm formAtualizado = new ProdutoFloralForm("Buque Primavera", "Arranjo com flores do campo",
+                new BigDecimal("59.90"), CategoriaProdutoFloral.ARRANJO, "Colorido", 5);
 
         // WHEN
-        Produto resultado = produtoService.atualizar(1L, formAtualizado);
+        ProdutoFloral resultado = produtoFloralService.atualizar(1L, formAtualizado);
 
         // THEN
         assertThat(resultado.getNome()).isEqualTo("Buque Primavera");
         assertThat(resultado.getPreco()).isEqualByComparingTo("59.90");
-        assertThat(resultado.getCategoria()).isEqualTo(CategoriaProduto.ARRANJO);
+        assertThat(resultado.getCategoria()).isEqualTo(CategoriaProdutoFloral.ARRANJO);
         assertThat(resultado.getQuantidadeEstoque()).isEqualTo(5);
 
-        verify(produtoRepository).findById(1L);
-        verify(produtoRepository).save(any(Produto.class));
+        verify(produtoFloralRepository).findById(1L);
+        verify(produtoFloralRepository).save(any(ProdutoFloral.class));
     }
 
     @Test
     @DisplayName("atualizar: deve lançar exceção quando produto não existe")
     void atualizar_quandoProdutoNaoExiste_deveLancarExcecao() {
         // GIVEN
-        when(produtoRepository.findById(99L)).thenReturn(Optional.empty());
+        when(produtoFloralRepository.findById(99L)).thenReturn(Optional.empty());
 
         // WHEN + THEN
-        assertThatThrownBy(() -> produtoService.atualizar(99L, formValido))
-                .isInstanceOf(ProdutoNaoEncontradoException.class);
+        assertThatThrownBy(() -> produtoFloralService.atualizar(99L, formValido))
+                .isInstanceOf(ProdutoFloralNaoEncontradoException.class);
 
         // Verifica que save() NUNCA foi chamado (produto não existe, não deve salvar)
-        verify(produtoRepository, never()).save(any());
+        verify(produtoFloralRepository, never()).save(any());
     }
 
     // =========================================================================
@@ -196,31 +196,31 @@ class ProdutoServiceTest {
     @DisplayName("excluir: deve deletar produto quando ID existe")
     void excluir_quandoProdutoExiste_deveDeletar() {
         // GIVEN
-        when(produtoRepository.existsById(1L)).thenReturn(true);
+        when(produtoFloralRepository.existsById(1L)).thenReturn(true);
         // doNothing() é o padrão para void, mas declaramos explicitamente para clareza
-        doNothing().when(produtoRepository).deleteById(1L);
+        doNothing().when(produtoFloralRepository).deleteById(1L);
 
         // WHEN — não deve lançar exceção
-        assertThatCode(() -> produtoService.excluir(1L))
+        assertThatCode(() -> produtoFloralService.excluir(1L))
                 .doesNotThrowAnyException();
 
         // THEN
-        verify(produtoRepository).existsById(1L);
-        verify(produtoRepository).deleteById(1L);
+        verify(produtoFloralRepository).existsById(1L);
+        verify(produtoFloralRepository).deleteById(1L);
     }
 
     @Test
     @DisplayName("excluir: deve lançar exceção quando produto não existe")
     void excluir_quandoProdutoNaoExiste_deveLancarExcecao() {
         // GIVEN
-        when(produtoRepository.existsById(99L)).thenReturn(false);
+        when(produtoFloralRepository.existsById(99L)).thenReturn(false);
 
         // WHEN + THEN
-        assertThatThrownBy(() -> produtoService.excluir(99L))
-                .isInstanceOf(ProdutoNaoEncontradoException.class)
+        assertThatThrownBy(() -> produtoFloralService.excluir(99L))
+                .isInstanceOf(ProdutoFloralNaoEncontradoException.class)
                 .hasMessageContaining("99");
 
         // deleteById NUNCA deve ser chamado se o produto não existe
-        verify(produtoRepository, never()).deleteById(any());
+        verify(produtoFloralRepository, never()).deleteById(any());
     }
 }

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
  *
  * <p><strong>Fluxo do Spring Security Form Login:</strong>
  * <ol>
- *   <li>Usuário acessa uma rota protegida (ex.: {@code /produtos}).</li>
+ *   <li>Usuário acessa uma rota protegida (ex.: {@code /produtos-florais}).</li>
  *   <li>Spring Security detecta que não está autenticado e redireciona para {@code /login}.</li>
  *   <li>Este controller serve a página HTML de login.</li>
  *   <li>Usuário submete o formulário com username/password para {@code POST /login}.</li>
- *   <li>Spring Security intercepta o POST, valida as credenciais e redireciona para {@code /produtos}.</li>
+ *   <li>Spring Security intercepta o POST, valida as credenciais e redireciona para {@code /produtos-florais}.</li>
  * </ol>
  *
  * <p>A URL de processamento do login ({@code POST /login}) é gerenciada <em>internamente</em>
